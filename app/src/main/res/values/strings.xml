@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Terjemahan Gemini AI</string>
+    <string name="translate_text">Terjemahkan Teks</string>
+    <string name="translate_image">Terjemahkan Gambar</string>
+    <string name="hint_text">Masukkan teks…</string>
+    <string name="btn_translate">Terjemahkan</string>
+    <string name="error_empty">Ups, tidak boleh kosong!</string>
+    <string name="select_language">Pilih Bahasa:</string>
+    <string name="choose_image_source">Pilih Sumber Gambar</string>
+    <string name="gallery">Galeri</string>
+    <string name="camera">Kamera</string>
+</resources>
