@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:backgroundTint="@color/blue_light"
+            android:backgroundTint="@color/teal_700"
             android:text="@string/btn_translate"
             android:textColor="@color/white" />
 

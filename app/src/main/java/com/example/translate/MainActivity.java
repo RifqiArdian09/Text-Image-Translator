@@ -8,19 +8,19 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.material.tabs.TabLayout;
 
 import com.example.translate.adapters.ViewPagerAdapter;
 import com.example.translate.fragments.ImageFragment;
 import com.example.translate.fragments.TextFragment;
+import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private static final int PERMISSION_REQUEST_CODE = 100;
+
     private String[] permissions = {
             Manifest.permission.CAMERA,
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -36,33 +36,13 @@ public class MainActivity extends AppCompatActivity {
             setContentView(R.layout.activity_main);
             Log.d(TAG, "Layout set successfully");
 
-            // Setup toolbar terlebih dahulu
-            setupToolbar();
-
-            // Check permissions
             checkPermissions();
-
-            // Setup ViewPager setelah semua siap
             setupViewPager();
 
             Log.d(TAG, "onCreate completed successfully");
         } catch (Exception e) {
             Log.e(TAG, "Error in onCreate: " + e.getMessage(), e);
             Toast.makeText(this, "Error loading app: " + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void setupToolbar() {
-        try {
-            Toolbar toolbar = findViewById(R.id.toolbar);
-            if (toolbar != null) {
-                setSupportActionBar(toolbar);
-                Log.d(TAG, "Toolbar setup successfully");
-            } else {
-                Log.e(TAG, "Toolbar not found in layout");
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error setting up toolbar: " + e.getMessage(), e);
         }
     }
 
@@ -80,22 +60,21 @@ public class MainActivity extends AppCompatActivity {
 
             ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-            // Add fragments with error handling
+            // Add fragments
             try {
                 adapter.addFragment(new TextFragment(), getString(R.string.translate_text));
                 adapter.addFragment(new ImageFragment(), getString(R.string.translate_image));
                 Log.d(TAG, "Fragments added to adapter");
             } catch (Exception e) {
                 Log.e(TAG, "Error adding fragments: " + e.getMessage(), e);
-                // Add fallback text if string resources are missing
-                adapter.addFragment(new TextFragment(), "Terjemahkan Teks");
-                adapter.addFragment(new ImageFragment(), "Terjemahkan Gambar");
+                adapter.addFragment(new TextFragment(), "Text");
+                adapter.addFragment(new ImageFragment(), "Image");
             }
 
             viewPager.setAdapter(adapter);
             tabLayout.setupWithViewPager(viewPager);
 
-            // Setup tab icons with error handling
+            // Set icons AFTER setupWithViewPager
             try {
                 if (tabLayout.getTabCount() >= 2) {
                     TabLayout.Tab tab0 = tabLayout.getTabAt(0);
@@ -103,14 +82,18 @@ public class MainActivity extends AppCompatActivity {
 
                     if (tab0 != null) {
                         tab0.setIcon(R.drawable.ic_text_fields);
+                        // Remove tint setting as we're using white icons on teal background
                     }
                     if (tab1 != null) {
                         tab1.setIcon(R.drawable.ic_image_placeholder);
                     }
-                    Log.d(TAG, "Tab icons set successfully");
+
+                    // Verify icons are loaded
+                    Log.d(TAG, "Tab 0 icon: " + (tab0 != null && tab0.getIcon() != null));
+                    Log.d(TAG, "Tab 1 icon: " + (tab1 != null && tab1.getIcon() != null));
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Error setting tab icons (continuing without icons): " + e.getMessage());
+                Log.e(TAG, "Error setting tab icons: " + e.getMessage(), e);
             }
 
             Log.d(TAG, "ViewPager setup completed");
@@ -155,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (!allGranted) {
-                    Toast.makeText(this, "Beberapa fitur mungkin tidak berfungsi tanpa izin", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Some features may not work without permissions", Toast.LENGTH_LONG).show();
                 }
                 Log.d(TAG, "Permission results processed");
             }
@@ -164,5 +147,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
-

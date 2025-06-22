@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Terjemahan Gemini AI</string>
+    <string name="app_name">Text | Image Translator</string>
     <string name="translate_text">Terjemahkan Teks</string>
     <string name="translate_image">Terjemahkan Gambar</string>
     <string name="hint_text">Masukkan teks…</string>
