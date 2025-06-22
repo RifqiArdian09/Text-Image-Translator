@@ -1,7 +1,5 @@
 # 📲 Aplikasi Penerjemah Teks & Gambar (Versi Java)
 
-![Icon](https://app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
-
 Aplikasi Android berbasis **Java** untuk menerjemahkan teks dan gambar antar berbagai bahasa menggunakan teknologi **AI Gemini dari Google**.
 
 ---
@@ -9,7 +7,7 @@ Aplikasi Android berbasis **Java** untuk menerjemahkan teks dan gambar antar ber
 ## ✨ Fitur Unggulan
 
 - 🔤 **Penerjemah Teks**  
-  Terjemahkan teks antar **11 bahasa** dengan cepat.
+  Terjemahkan teks dengan cepat.
 
 - 🖼️ **Penerjemah Gambar**  
   Ekstrak teks dari gambar dan langsung terjemahkan secara otomatis.
@@ -42,12 +40,13 @@ Aplikasi Android berbasis **Java** untuk menerjemahkan teks dan gambar antar ber
 
 2. **Atur API Key**:
 
-    - Buat file `secrets.properties` di direktori root project
-    - Tambahkan baris berikut:
+    -Buka file TextFragment.java
+   -Buka file ImageFragment.java
 
-      ```properties
-      GEMINI_API_KEY=kunci_api_anda_disini
-      ```
+**Cari baris berikut:**
+"gemini-1.5-flash", // Updated from "gemini-pro"
+"///" // Replace with your API key
+Ganti dengan API key Anda
 
 3. **Buka project** di Android Studio dan jalankan ke emulator atau perangkat.
 
