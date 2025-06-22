@@ -1,4 +1,4 @@
-# 📲 Aplikasi Penerjemah Teks & Gambar (Versi Java)
+# 📲 Aplikasi Penerjemah Teks & Gambar 
 
 Aplikasi Android berbasis **Java** untuk menerjemahkan teks dan gambar antar berbagai bahasa menggunakan teknologi **AI Gemini dari Google**.
 
@@ -38,16 +38,22 @@ Aplikasi Android berbasis **Java** untuk menerjemahkan teks dan gambar antar ber
     cd penerjemah-teks-gambar-java
     ```
 
-2. **Atur API Key:
-   -Buka file TextFragment.java
-   *app/src/main/java/com/example/translator/fragments/TextFragment.java*
-   -Buka file ImageFragment.java
-   *app/src/main/java/com/example/translator/fragments/ImageFragment.java*
+2. **Atur API Key Anda**:
 
-**Cari baris berikut:**
+* Buka file 
+```
+app/src/main/java/com/example/translator/fragments/TextFragment.java.
+```
+* Buka file
+```
+app/src/main/java/com/example/translator/fragments/ImageFragment.java.
+```
+- Cari baris berikut di kedua file:
+```
 "gemini-1.5-flash", // Updated from "gemini-pro"
-"///" // Replace with your API key
-Ganti dengan API key Anda
+ "///" // Replace with your API key
+```
+Ganti "///" dengan API Key Google Gemini Anda.
 
 3. **Buka project** di Android Studio dan jalankan ke emulator atau perangkat.
 
