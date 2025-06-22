@@ -38,10 +38,11 @@ Aplikasi Android berbasis **Java** untuk menerjemahkan teks dan gambar antar ber
     cd penerjemah-teks-gambar-java
     ```
 
-2. **Atur API Key**:
-
-    -Buka file TextFragment.java
+2. **Atur API Key:
+   -Buka file TextFragment.java
+   *app/src/main/java/com/example/translator/fragments/TextFragment.java*
    -Buka file ImageFragment.java
+   *app/src/main/java/com/example/translator/fragments/ImageFragment.java*
 
 **Cari baris berikut:**
 "gemini-1.5-flash", // Updated from "gemini-pro"
