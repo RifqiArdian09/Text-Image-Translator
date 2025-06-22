@@ -40,19 +40,19 @@ Aplikasi Android berbasis **Java** untuk menerjemahkan teks dan gambar antar ber
 
 2. **Atur API Key Anda**:
 
-* Buka file 
-```
-app/src/main/java/com/example/translator/fragments/TextFragment.java.
-```
-* Buka file
-```
-app/src/main/java/com/example/translator/fragments/ImageFragment.java.
-```
-- Cari baris berikut di kedua file:
-```
-"gemini-1.5-flash", // Updated from "gemini-pro"
- "///" // Replace with your API key
-```
+    * Buka file 
+    ```
+    app/src/main/java/com/example/translator/fragments/TextFragment.java.
+    ```
+    * Buka file
+    ```
+    app/src/main/java/com/example/translator/fragments/ImageFragment.java.
+    ```
+    - Cari baris berikut di kedua file:
+    ```
+    "gemini-1.5-flash", // Updated from "gemini-pro"
+     "///" // Replace with your API key
+    ```
 Ganti "///" dengan API Key Google Gemini Anda.
 
 3. **Buka project** di Android Studio dan jalankan ke emulator atau perangkat.
