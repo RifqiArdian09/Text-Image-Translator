@@ -34,19 +34,19 @@ Aplikasi Android berbasis **Java** untuk menerjemahkan teks dan gambar antar ber
 1. **Clone repository**:
 
     ```bash
-    git clone https://github.com/username/penerjemah-teks-gambar-java.git
-    cd penerjemah-teks-gambar-java
+    https://github.com/RifqiArdian09/Text-Image-Translator.git
+    cd translate
     ```
 
 2. **Atur API Key Anda**:
 
     * Buka file 
     ```
-    app/src/main/java/com/example/translator/fragments/TextFragment.java.
+    app/src/main/java/com/example/translate/fragments/TextFragment.java.
     ```
     * Buka file
     ```
-    app/src/main/java/com/example/translator/fragments/ImageFragment.java.
+    app/src/main/java/com/example/translate/fragments/ImageFragment.java.
     ```
     - Cari baris berikut di kedua file:
     ```
@@ -73,7 +73,7 @@ Ganti "///" dengan API Key Google Gemini Anda.
 ```text
 /app
 ├── src/main
-│   ├── java/com/example/translator
+│   ├── java/com/example/translate
 │   │   ├── MainActivity.java         # Aktivitas utama
 │   │   ├── adapters
 │   │   │   └── ViewPagerAdapter.java # Pengatur tab & fragment
