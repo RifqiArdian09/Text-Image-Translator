@@ -51,7 +51,7 @@ public class ImageFragment extends Fragment {
     private final String[] languages = {
             "Bahasa Indonesia", "Bahasa Inggris", "Bahasa China",
             "Bahasa Arab", "Bahasa Jepang", "Bahasa Korea",
-            "Bahasa Prancis", "Bahasa Jerman","Bahasa Belanda", "Bahasa Philipina","Bahasa Jawa",
+            "Bahasa Prancis", "Bahasa Jerman","Bahasa Belanda", "Bahasa Filipina","Bahasa Jawa",
     };
 
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
