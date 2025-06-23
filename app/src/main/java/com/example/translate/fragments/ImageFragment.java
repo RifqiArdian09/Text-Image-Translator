@@ -1,6 +1,9 @@
 package com.example.translate.fragments;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,6 +43,7 @@ public class ImageFragment extends Fragment {
     private ImageView ivImagePreview;
     private Spinner spinnerLanguage;
     private Button btnTranslate;
+    private ImageButton btnCopy;
     private TextView tvResult;
     private Bitmap selectedImage;
     private GenerativeModelFutures visionModel;
@@ -47,7 +52,6 @@ public class ImageFragment extends Fragment {
             "Bahasa Indonesia", "Bahasa Inggris", "Bahasa China",
             "Bahasa Arab", "Bahasa Jepang", "Bahasa Korea",
             "Bahasa Prancis", "Bahasa Jerman","Bahasa Belanda", "Bahasa Philipina","Bahasa Jawa",
-
     };
 
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
@@ -59,7 +63,6 @@ public class ImageFragment extends Fragment {
                         selectedImage = MediaStore.Images.Media.getBitmap(
                                 requireActivity().getContentResolver(), imageUri);
                         ivImagePreview.setImageBitmap(selectedImage);
-                        // Show translate button once image is selected
                         btnTranslate.setVisibility(View.VISIBLE);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -75,7 +78,6 @@ public class ImageFragment extends Fragment {
                     Bundle extras = result.getData().getExtras();
                     selectedImage = (Bitmap) extras.get("data");
                     ivImagePreview.setImageBitmap(selectedImage);
-                    // Show translate button once image is selected
                     btnTranslate.setVisibility(View.VISIBLE);
                 }
             });
@@ -84,19 +86,18 @@ public class ImageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_image, container, false);
 
-        // Updated model name - using current Gemini 1.5 Flash which supports vision
         GenerativeModel gm = new GenerativeModel(
-                "gemini-1.5-flash", // Updated from "gemini-pro-vision"
-                "///" // Replace with your API key
+                "gemini-1.5-flash",
+                "Replace Your API"
         );
         visionModel = GenerativeModelFutures.from(gm);
 
         ivImagePreview = view.findViewById(R.id.ivImagePreview);
         spinnerLanguage = view.findViewById(R.id.spinnerLanguage);
         btnTranslate = view.findViewById(R.id.btnTranslate);
+        btnCopy = view.findViewById(R.id.btnCopy);
         tvResult = view.findViewById(R.id.tvResult);
 
-        // Initially hide translate button until image is selected
         btnTranslate.setVisibility(View.GONE);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -118,6 +119,8 @@ public class ImageFragment extends Fragment {
                 translateImage(selectedLang);
             }
         });
+
+        btnCopy.setOnClickListener(v -> copyTextToClipboard());
 
         return view;
     }
@@ -157,9 +160,9 @@ public class ImageFragment extends Fragment {
 
         tvResult.setVisibility(View.VISIBLE);
         tvResult.setText("Sedang menganalisis dan menerjemahkan gambar...");
-        btnTranslate.setEnabled(false); // Disable button during translation
+        btnCopy.setVisibility(View.GONE);
+        btnTranslate.setEnabled(false);
 
-        // Improved prompt for better OCR and translation
         String prompt = "Analisis gambar ini dan lakukan hal berikut:\n" +
                 "1. Identifikasi dan ekstrak semua teks yang terlihat dalam gambar\n" +
                 "2. Jika ada teks, terjemahkan ke dalam " + language + "\n" +
@@ -178,12 +181,14 @@ public class ImageFragment extends Fragment {
             @Override
             public void onSuccess(GenerateContentResponse result) {
                 requireActivity().runOnUiThread(() -> {
-                    btnTranslate.setEnabled(true); // Re-enable button
+                    btnTranslate.setEnabled(true);
                     String translatedText = result.getText();
                     if (translatedText != null && !translatedText.trim().isEmpty()) {
                         tvResult.setText(translatedText.trim());
+                        btnCopy.setVisibility(View.VISIBLE);
                     } else {
                         tvResult.setText("Tidak ada teks yang dapat diidentifikasi dalam gambar.");
+                        btnCopy.setVisibility(View.GONE);
                     }
                 });
             }
@@ -191,13 +196,38 @@ public class ImageFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Throwable t) {
                 requireActivity().runOnUiThread(() -> {
-                    btnTranslate.setEnabled(true); // Re-enable button
+                    btnTranslate.setEnabled(true);
                     String errorMessage = "Gagal menerjemahkan gambar: " + t.getMessage();
                     showSnackbar(errorMessage);
                     tvResult.setText("Terjadi kesalahan. Silakan coba lagi.");
+                    btnCopy.setVisibility(View.GONE);
                 });
             }
         }, executor);
+    }
+
+    private void copyTextToClipboard() {
+        if (tvResult.getText() != null && !tvResult.getText().toString().isEmpty()) {
+            ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Translation", tvResult.getText());
+            clipboard.setPrimaryClip(clip);
+
+            // Add animation feedback
+            btnCopy.animate()
+                    .scaleX(1.2f)
+                    .scaleY(1.2f)
+                    .setDuration(100)
+                    .withEndAction(() -> btnCopy.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .setDuration(100)
+                            .start())
+                    .start();
+
+            showSnackbar(getString(R.string.text_copied));
+        } else {
+            showSnackbar("Tidak ada teks untuk disalin");
+        }
     }
 
     private void showSnackbar(String message) {

@@ -1,6 +1,7 @@
 package com.example.translate;
 
 import android.Manifest;
+import android.content.ClipboardManager;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -60,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
             ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-            // Add fragments
             try {
                 adapter.addFragment(new TextFragment(), getString(R.string.translate_text));
                 adapter.addFragment(new ImageFragment(), getString(R.string.translate_image));
@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
             viewPager.setAdapter(adapter);
             tabLayout.setupWithViewPager(viewPager);
 
-            // Set icons AFTER setupWithViewPager
             try {
                 if (tabLayout.getTabCount() >= 2) {
                     TabLayout.Tab tab0 = tabLayout.getTabAt(0);
@@ -82,13 +81,11 @@ public class MainActivity extends AppCompatActivity {
 
                     if (tab0 != null) {
                         tab0.setIcon(R.drawable.ic_text_fields);
-                        // Remove tint setting as we're using white icons on teal background
                     }
                     if (tab1 != null) {
                         tab1.setIcon(R.drawable.ic_image_placeholder);
                     }
 
-                    // Verify icons are loaded
                     Log.d(TAG, "Tab 0 icon: " + (tab0 != null && tab0.getIcon() != null));
                     Log.d(TAG, "Tab 1 icon: " + (tab1 != null && tab1.getIcon() != null));
                 }

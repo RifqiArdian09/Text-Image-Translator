@@ -1,5 +1,8 @@
 package com.example.translate.fragments;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -30,6 +34,7 @@ public class TextFragment extends Fragment {
     private EditText etTextInput;
     private Spinner spinnerLanguage;
     private Button btnTranslate;
+    private ImageButton btnCopy;
     private TextView tvResult;
     private GenerativeModelFutures model;
 
@@ -37,23 +42,22 @@ public class TextFragment extends Fragment {
             "Bahasa Indonesia", "Bahasa Inggris", "Bahasa China",
             "Bahasa Arab", "Bahasa Jepang", "Bahasa Korea",
             "Bahasa Prancis", "Bahasa Jerman", "Bahasa Belanda","Bahasa Philipina","Bahasa Jawa",
-
     };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_text, container, false);
 
-        // Updated model name - using current Gemini 1.5 Flash
         GenerativeModel gm = new GenerativeModel(
-                "gemini-1.5-flash", // Updated from "gemini-pro"
-                "///" // Replace with your API key
+                "gemini-1.5-flash",
+                "Replace Your API"
         );
         model = GenerativeModelFutures.from(gm);
 
         etTextInput = view.findViewById(R.id.etTextInput);
         spinnerLanguage = view.findViewById(R.id.spinnerLanguage);
         btnTranslate = view.findViewById(R.id.btnTranslate);
+        btnCopy = view.findViewById(R.id.btnCopy);
         tvResult = view.findViewById(R.id.tvResult);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -75,15 +79,17 @@ public class TextFragment extends Fragment {
             }
         });
 
+        btnCopy.setOnClickListener(v -> copyTextToClipboard());
+
         return view;
     }
 
     private void translateText(String text, String language) {
         tvResult.setVisibility(View.VISIBLE);
         tvResult.setText("Sedang menerjemahkan...");
-        btnTranslate.setEnabled(false); // Disable button during translation
+        btnCopy.setVisibility(View.GONE);
+        btnTranslate.setEnabled(false);
 
-        // Improved prompt for better translation accuracy
         String prompt = "Terjemahkan teks berikut ke dalam " + language + ". " +
                 "Berikan hanya hasil terjemahan tanpa penjelasan tambahan:\n\n" + text;
 
@@ -98,12 +104,14 @@ public class TextFragment extends Fragment {
             @Override
             public void onSuccess(GenerateContentResponse result) {
                 requireActivity().runOnUiThread(() -> {
-                    btnTranslate.setEnabled(true); // Re-enable button
+                    btnTranslate.setEnabled(true);
                     String translatedText = result.getText();
                     if (translatedText != null && !translatedText.trim().isEmpty()) {
                         tvResult.setText(translatedText.trim());
+                        btnCopy.setVisibility(View.VISIBLE);
                     } else {
                         tvResult.setText("Tidak ada hasil terjemahan.");
+                        btnCopy.setVisibility(View.GONE);
                     }
                 });
             }
@@ -111,13 +119,38 @@ public class TextFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Throwable t) {
                 requireActivity().runOnUiThread(() -> {
-                    btnTranslate.setEnabled(true); // Re-enable button
+                    btnTranslate.setEnabled(true);
                     String errorMessage = "Gagal menerjemahkan: " + t.getMessage();
                     showSnackbar(errorMessage);
                     tvResult.setText("Terjadi kesalahan. Silakan coba lagi.");
+                    btnCopy.setVisibility(View.GONE);
                 });
             }
         }, executor);
+    }
+
+    private void copyTextToClipboard() {
+        if (tvResult.getText() != null && !tvResult.getText().toString().isEmpty()) {
+            ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Translation", tvResult.getText());
+            clipboard.setPrimaryClip(clip);
+
+            // Add animation feedback
+            btnCopy.animate()
+                    .scaleX(1.2f)
+                    .scaleY(1.2f)
+                    .setDuration(100)
+                    .withEndAction(() -> btnCopy.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .setDuration(100)
+                            .start())
+                    .start();
+
+            showSnackbar(getString(R.string.text_copied));
+        } else {
+            showSnackbar("Tidak ada teks untuk disalin");
+        }
     }
 
     private void showSnackbar(String message) {
