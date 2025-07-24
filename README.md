@@ -15,8 +15,7 @@ Aplikasi Android berbasis **Java** untuk menerjemahkan teks dan gambar antar ber
 - 🧭 **Antarmuka User-Friendly**  
   Desain material modern, intuitif, dan mudah digunakan.
 
-- 📡 **Dukungan Offline**  
-  Fitur dasar dapat digunakan **tanpa koneksi internet**.
+
 
 ---
 
